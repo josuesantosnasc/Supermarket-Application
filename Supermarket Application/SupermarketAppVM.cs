@@ -6,15 +6,20 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using Npgsql;
 
 namespace Supermarket_Application
 {
     public class SupermarketAppVM: INotifyPropertyChanged
     {
+        private NpgsqlConnection connection;
+
+        public int indexSelectedProduct { get; set; }
         public int TotalSupermarketPurchase { get; set; }
 
-        private int IndexSelectedProduct { get; set; }
+        public SQLConnection SQLDatabase { get; set; }  
 
+      
 
         public ObservableCollection<SupermarketList> UserSupermarketList { get; set; }
 
@@ -32,10 +37,17 @@ namespace Supermarket_Application
             {
                
             };
+            SQLDatabase = new SQLConnection();
+
+            this.UserSupermarketList = SQLDatabase.GetAllRecords();
+
+            this.TotalSupermarketPurchase = UserSupermarketList.Sum(x => x.totalPrice);
+
 
             UserSupermarketList.CollectionChanged += CollectionChanged;
 
-            this.TotalSupermarketPurchase = 0;
+            
+
 
            
 
@@ -78,7 +90,16 @@ namespace Supermarket_Application
                 {
                     UserSupermarketList.Add(UserSupermarketListDataWindow);
 
-                    OnPropertyChanged("TotalSupermarketPurchase");
+                    if (UserSupermarketList[UserSupermarketList.IndexOf(UserSupermarketListDataWindow)]!=null)
+                    {
+                        SupermarketList UserSupermarketListAddDataBase = UserSupermarketList[UserSupermarketList.IndexOf(UserSupermarketListDataWindow)];
+
+                        SQLDatabase.InsertRecord(UserSupermarketListAddDataBase.productName, UserSupermarketListAddDataBase.amountProduct, UserSupermarketListAddDataBase.totalPrice);
+                        
+
+                    }
+
+                    
 
 
 
@@ -96,11 +117,13 @@ namespace Supermarket_Application
             {
                 if (SelectedProduct!=null)
                 {
-                    SupermarketList UserSupermarketListEditDataWindow = new SupermarketList(SelectedProduct.productName,SelectedProduct.amountProduct,SelectedProduct.totalPrice);
+                    SupermarketList copyUserSupermarketListDataWindow = (SupermarketList)SelectedProduct.Clone();
+
+                    string OldProductName = copyUserSupermarketListDataWindow.productName;
 
                     SupermarketListInformation UserEditProductWindow = new SupermarketListInformation();
 
-                    UserEditProductWindow.DataContext = UserSupermarketListEditDataWindow;
+                    UserEditProductWindow.DataContext = copyUserSupermarketListDataWindow;
 
                     UserEditProductWindow.ShowDialog();
 
@@ -108,9 +131,14 @@ namespace Supermarket_Application
 
                     if (IsResultTrue)
                     {
-                        UserSupermarketList[IndexSelectedProduct] = UserSupermarketListEditDataWindow;
-                        OnPropertyChanged("TotalSupermarketPurchase");
+                      
+                        UserSupermarketList[UserSupermarketList.IndexOf(SelectedProduct)] = copyUserSupermarketListDataWindow;
 
+
+
+                        SQLDatabase.UpdateRecord(copyUserSupermarketListDataWindow.productName, copyUserSupermarketListDataWindow.amountProduct, copyUserSupermarketListDataWindow.totalPrice,OldProductName);
+
+                        
                     }
 
 
@@ -120,8 +148,8 @@ namespace Supermarket_Application
                 {
                     MessageBox.Show("Select at least One Product !! ");
                 }
-                
-            });
+
+            }, (object _) => SelectedProduct != null );
         }
 
         public void RemoveProduct()
@@ -132,9 +160,14 @@ namespace Supermarket_Application
                 {
                     var result = MessageBox.Show("Are you sure you want to delete this item?", "Confirmation", MessageBoxButton.YesNo);
 
+
                     if (result == MessageBoxResult.Yes)
                     {
+                        SQLDatabase.DeleteRecord(SelectedProduct.productName);
                         UserSupermarketList.Remove(SelectedProduct);
+                      
+
+
                         OnPropertyChanged("TotalSupermarketPurchase");
                     }
                   
@@ -143,7 +176,7 @@ namespace Supermarket_Application
                 {
                     MessageBox.Show("Select at least One Product !! ");
                 }
-            });
+            }, (object _) => SelectedProduct != null);
         }
 
         
@@ -157,12 +190,22 @@ namespace Supermarket_Application
             }
         }
 
+       
+
 
 
         public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.TotalSupermarketPurchase = UserSupermarketList.Sum(x => x.totalPrice);
+            OnPropertyChanged("TotalSupermarketPurchase");
         }
+
+       
+
+
+
+      
+
 
 
     }

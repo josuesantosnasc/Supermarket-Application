@@ -10,7 +10,7 @@
         <Button Content="Add New Product" Command="{Binding Add}" HorizontalAlignment="Left" Height="36" Margin="39,73,0,0" VerticalAlignment="Top" Width="101"/>
         <Button Content="Edit" Command="{Binding Edit}" HorizontalAlignment="Left" Height="36" Margin="39,161,0,0" VerticalAlignment="Top" Width="101"/>
         <Button Content="Remove" Command="{Binding Remove}" HorizontalAlignment="Left" Height="36" Margin="39,245,0,0" VerticalAlignment="Top" Width="101"/>
-        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="204,73,39,108"  ItemsSource="{Binding  UserSupermarketList}" SelectedItem="{Binding SelectedProduct}" SelectedIndex="{Binding IndexSelectedProduct}" SelectionChanged="ListView_SelectionChanged">
+        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="204,73,39,108"  ItemsSource="{Binding  UserSupermarketList}" SelectedItem="{Binding SelectedProduct}" SelectedIndex="{Binding indexSelectedProduct}"  SelectionChanged="ListView_SelectionChanged">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Product Name" DisplayMemberBinding="{Binding productName}"/>
