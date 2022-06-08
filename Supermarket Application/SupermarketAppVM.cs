@@ -69,6 +69,13 @@ namespace Supermarket_Application
             }
         }
 
+        public void ResetUserSupermarketList()
+        {
+            this.UserSupermarketList.Clear();
+            this.UserSupermarketList = SQLDatabase.GetAllRecords();
+            OnPropertyChanged("TotalSupermarketPurchase");
+        }
+
         public void AddNewProduct()
         {
             Add = new RelayCommand((object _) =>
@@ -95,8 +102,8 @@ namespace Supermarket_Application
                         SupermarketList UserSupermarketListAddDataBase = UserSupermarketList[UserSupermarketList.IndexOf(UserSupermarketListDataWindow)];
 
                         SQLDatabase.InsertRecord(UserSupermarketListAddDataBase.productName, UserSupermarketListAddDataBase.amountProduct, UserSupermarketListAddDataBase.totalPrice);
-                        
 
+                        ResetUserSupermarketList();
                     }
 
                     
@@ -132,13 +139,14 @@ namespace Supermarket_Application
                     if (IsResultTrue)
                     {
                       
-                        UserSupermarketList[UserSupermarketList.IndexOf(SelectedProduct)] = copyUserSupermarketListDataWindow;
-
+                       
 
 
                         SQLDatabase.UpdateRecord(copyUserSupermarketListDataWindow.productName, copyUserSupermarketListDataWindow.amountProduct, copyUserSupermarketListDataWindow.totalPrice,OldProductName);
 
-                        
+                        ResetUserSupermarketList();
+
+
                     }
 
 
@@ -164,11 +172,7 @@ namespace Supermarket_Application
                     if (result == MessageBoxResult.Yes)
                     {
                         SQLDatabase.DeleteRecord(SelectedProduct.productName);
-                        UserSupermarketList.Remove(SelectedProduct);
-                      
-
-
-                        OnPropertyChanged("TotalSupermarketPurchase");
+                        ResetUserSupermarketList();
                     }
                   
                 }

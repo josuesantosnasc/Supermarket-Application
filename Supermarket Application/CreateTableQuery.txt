@@ -1,0 +1,7 @@
+﻿CREATE TABLE usersupermarketlist(
+ID serial primary key,
+productname varchar(50),
+  amountproduct int,
+  totalprice int
+
+)

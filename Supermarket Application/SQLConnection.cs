@@ -168,7 +168,7 @@ namespace Supermarket_Application
 
         private static NpgsqlConnection GetConnection()
         {
-            return new NpgsqlConnection(@"Server=localhost;Port=5432;User Id=postgres;Password=santos17;Database=postgres");
+            return new NpgsqlConnection(@"Server=localhost;Port=5430;User Id=root;Password=root;Database=test_db");
 
         }
     }
