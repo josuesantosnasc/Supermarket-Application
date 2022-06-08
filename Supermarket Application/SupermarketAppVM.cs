@@ -17,7 +17,7 @@ namespace Supermarket_Application
 
         private SQLConnection sqlDataBase;
 
-        public int totalSupermarketPurchase { get; set; }
+        private int totalSupermarketPurchase;
 
         public ObservableCollection<ProductSupermarket> userProductSupermarket { get; set; }
 
@@ -82,8 +82,8 @@ namespace Supermarket_Application
 
                         this.userProductSupermarket.Add(userProductSupermarketDataWindow);
 
-                        this.totalSupermarketPurchase = userProductSupermarket.Sum(x => x.TotalPrice);
-                        OnPropertyChanged("totalSupermarketPurchase");
+                        this.TotalSupermarketPurchase = userProductSupermarket.Sum(x => x.TotalPrice);
+                        
                     }
                     catch(Exception ex)
                     {
@@ -125,7 +125,7 @@ namespace Supermarket_Application
 
                             userProductSupermarket[userProductSupermarket.IndexOf(selectedProduct)] = copyuserProductSupermarketDataWindow;
 
-                            this.totalSupermarketPurchase = userProductSupermarket.Sum(x => x.TotalPrice);
+                            this.TotalSupermarketPurchase = userProductSupermarket.Sum(x => x.TotalPrice);
 
                             OnPropertyChanged("totalSupermarketPurchase");
 
@@ -163,7 +163,7 @@ namespace Supermarket_Application
                         {
                             sqlDataBase.DeleteRecord(selectedProduct.ProductName);
                             userProductSupermarket.Remove(selectedProduct);
-                            this.totalSupermarketPurchase = userProductSupermarket.Sum(x => x.TotalPrice);
+                            this.TotalSupermarketPurchase = userProductSupermarket.Sum(x => x.TotalPrice);
                             OnPropertyChanged("totalSupermarketPurchase");
                         }
                         catch(Exception ex)
@@ -190,7 +190,7 @@ namespace Supermarket_Application
             set
             {
                 this.totalSupermarketPurchase = value;
-                OnPropertyChanged("totalSupermarketPurchase");
+                OnPropertyChanged("TotalSupermarketPurchase");
             }
         }
 
