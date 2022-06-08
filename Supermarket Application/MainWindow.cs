@@ -15,12 +15,10 @@ using System.Windows.Shapes;
 
 namespace Supermarket_Application
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    
+    public partial class SupermarketApp : Window
     {
-        public MainWindow()
+        public SupermarketApp()
         {
             InitializeComponent();
             DataContext = new SupermarketAppVM();

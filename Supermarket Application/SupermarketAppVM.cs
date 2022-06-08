@@ -12,18 +12,16 @@ namespace Supermarket_Application
 {
     public class SupermarketAppVM: INotifyPropertyChanged
     {
-        private NpgsqlConnection connection;
+        
+       
 
-        public int indexSelectedProduct { get; set; }
-        public int TotalSupermarketPurchase { get; set; }
+        private SQLConnection sqlDataBase;
 
-        public SQLConnection SQLDatabase { get; set; }  
+        public int totalSupermarketPurchase { get; set; }
 
-      
+        public ObservableCollection<ProductSupermarket> userProductSupermarket { get; set; }
 
-        public ObservableCollection<SupermarketList> UserSupermarketList { get; set; }
-
-        public SupermarketList SelectedProduct { get; set; }
+        public ProductSupermarket selectedProduct { get; set; }
 
       
         public ICommand Add { get; private set; }
@@ -31,35 +29,23 @@ namespace Supermarket_Application
         public ICommand Edit { get; private set; }
 
         public ICommand Remove { get; private set; }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
         public SupermarketAppVM()
         {
-            UserSupermarketList = new ObservableCollection<SupermarketList>()
-            {
-               
-            };
-            SQLDatabase = new SQLConnection();
+            this.userProductSupermarket = new ObservableCollection<ProductSupermarket>();
+             
+            sqlDataBase = new SQLConnection();
 
-            this.UserSupermarketList = SQLDatabase.GetAllRecords();
+            this.userProductSupermarket = sqlDataBase.GetAllRecords();
 
-            this.TotalSupermarketPurchase = UserSupermarketList.Sum(x => x.totalPrice);
+            this.totalSupermarketPurchase = userProductSupermarket.Sum(x => x.TotalPrice);
 
-
-            UserSupermarketList.CollectionChanged += CollectionChanged;
-
-            
-
-
-           
-
-            AddNewProduct();
-
-            EditProduct();
-
-            RemoveProduct();
+            StartUpCommands();
 
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        
 
         private void OnPropertyChanged(string propertyName)
         {
@@ -69,86 +55,90 @@ namespace Supermarket_Application
             }
         }
 
-        public void ResetUserSupermarketList()
-        {
-            this.UserSupermarketList.Clear();
-            this.UserSupermarketList = SQLDatabase.GetAllRecords();
-            OnPropertyChanged("TotalSupermarketPurchase");
-        }
 
-        public void AddNewProduct()
+        public void StartUpCommands()
         {
             Add = new RelayCommand((object _) =>
             {
-                SupermarketList UserSupermarketListDataWindow = new SupermarketList();
+                ProductSupermarket userProductSupermarketDataWindow = new ProductSupermarket();
 
 
-                SupermarketListInformation UserAddNewProductWindow = new SupermarketListInformation();
+                ProductSupermarketInformation userAddNewProductWindow = new ProductSupermarketInformation();
 
-                UserAddNewProductWindow.DataContext = UserSupermarketListDataWindow;
+               userAddNewProductWindow.DataContext = userProductSupermarketDataWindow;
 
-                UserAddNewProductWindow.ShowDialog();
+               userAddNewProductWindow.ShowDialog();
 
-                bool IsResultTrue = (bool)UserAddNewProductWindow.DialogResult;
+                bool IsResultTrue = (bool)userAddNewProductWindow.DialogResult;
 
 
 
                 if (IsResultTrue)
                 {
-                    UserSupermarketList.Add(UserSupermarketListDataWindow);
 
-                    if (UserSupermarketList[UserSupermarketList.IndexOf(UserSupermarketListDataWindow)]!=null)
+                    try
                     {
-                        SupermarketList UserSupermarketListAddDataBase = UserSupermarketList[UserSupermarketList.IndexOf(UserSupermarketListDataWindow)];
+                        sqlDataBase.InsertRecord(userProductSupermarketDataWindow.ProductName, userProductSupermarketDataWindow.AmountProduct, userProductSupermarketDataWindow.TotalPrice);
 
-                        SQLDatabase.InsertRecord(UserSupermarketListAddDataBase.productName, UserSupermarketListAddDataBase.amountProduct, UserSupermarketListAddDataBase.totalPrice);
+                        this.userProductSupermarket.Add(userProductSupermarketDataWindow);
 
-                        ResetUserSupermarketList();
+                        this.totalSupermarketPurchase = userProductSupermarket.Sum(x => x.TotalPrice);
+                        OnPropertyChanged("totalSupermarketPurchase");
                     }
+                    catch(Exception ex)
+                    {
 
-                    
+                        throw new Exception("Error in connection to database", ex);
+                    }
+              
 
 
 
                 }
 
-                
 
-                
+
             });
-        }
 
-        public void EditProduct()
-        {
             Edit = new RelayCommand((object _) =>
             {
-                if (SelectedProduct!=null)
+                if (selectedProduct != null)
                 {
-                    SupermarketList copyUserSupermarketListDataWindow = (SupermarketList)SelectedProduct.Clone();
+                    ProductSupermarket copyuserProductSupermarketDataWindow = (ProductSupermarket)selectedProduct.Clone();
 
-                    string OldProductName = copyUserSupermarketListDataWindow.productName;
+                    string oldProductName = copyuserProductSupermarketDataWindow.ProductName;
 
-                    SupermarketListInformation UserEditProductWindow = new SupermarketListInformation();
+                    ProductSupermarketInformation userEditProductWindow = new ProductSupermarketInformation();
 
-                    UserEditProductWindow.DataContext = copyUserSupermarketListDataWindow;
+                    userEditProductWindow.DataContext = copyuserProductSupermarketDataWindow;
 
-                    UserEditProductWindow.ShowDialog();
+                    userEditProductWindow.ShowDialog();
 
-                    bool IsResultTrue = (bool)UserEditProductWindow.DialogResult;
+                    bool IsResultTrue = (bool)userEditProductWindow.DialogResult;
 
                     if (IsResultTrue)
                     {
-                      
+
+                        try
+                        {
+                            sqlDataBase.UpdateRecord(copyuserProductSupermarketDataWindow.ProductName, copyuserProductSupermarketDataWindow.AmountProduct, copyuserProductSupermarketDataWindow.TotalPrice, oldProductName);
+
+                            userProductSupermarket[userProductSupermarket.IndexOf(selectedProduct)] = copyuserProductSupermarketDataWindow;
+
+                            this.totalSupermarketPurchase = userProductSupermarket.Sum(x => x.TotalPrice);
+
+                            OnPropertyChanged("totalSupermarketPurchase");
+
+                        }
+                        catch(Exception ex)
+                        {
+                            throw new Exception("Error in connection to database", ex);
+                        }
+
                        
 
 
-                        SQLDatabase.UpdateRecord(copyUserSupermarketListDataWindow.productName, copyUserSupermarketListDataWindow.amountProduct, copyUserSupermarketListDataWindow.totalPrice,OldProductName);
-
-                        ResetUserSupermarketList();
-
-
                     }
-
 
 
                 }
@@ -157,52 +147,54 @@ namespace Supermarket_Application
                     MessageBox.Show("Select at least One Product !! ");
                 }
 
-            }, (object _) => SelectedProduct != null );
-        }
+            }, (object _) => selectedProduct != null);
 
-        public void RemoveProduct()
-        {
+
             Remove = new RelayCommand((_object) =>
             {
-                if (SelectedProduct != null)
+                if (selectedProduct != null)
                 {
                     var result = MessageBox.Show("Are you sure you want to delete this item?", "Confirmation", MessageBoxButton.YesNo);
 
 
                     if (result == MessageBoxResult.Yes)
                     {
-                        SQLDatabase.DeleteRecord(SelectedProduct.productName);
-                        ResetUserSupermarketList();
+                        try
+                        {
+                            sqlDataBase.DeleteRecord(selectedProduct.ProductName);
+                            userProductSupermarket.Remove(selectedProduct);
+                            this.totalSupermarketPurchase = userProductSupermarket.Sum(x => x.TotalPrice);
+                            OnPropertyChanged("totalSupermarketPurchase");
+                        }
+                        catch(Exception ex)
+                        {
+                            throw new Exception("Error in connection to database", ex);
+                        }
+                       
                     }
-                  
+
                 }
                 else
                 {
                     MessageBox.Show("Select at least One Product !! ");
                 }
-            }, (object _) => SelectedProduct != null);
+            }, (object _) => selectedProduct != null);
         }
 
+      
+   
         
-        public int totalSupermarketPurchase
+        public int TotalSupermarketPurchase
         {
-            get { return TotalSupermarketPurchase; }
+            get { return this.totalSupermarketPurchase; }
             set
             {
-                TotalSupermarketPurchase = value;
-                OnPropertyChanged("TotalSupermarketPurchase");
+                this.totalSupermarketPurchase = value;
+                OnPropertyChanged("totalSupermarketPurchase");
             }
         }
 
        
-
-
-
-        public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            this.TotalSupermarketPurchase = UserSupermarketList.Sum(x => x.totalPrice);
-            OnPropertyChanged("TotalSupermarketPurchase");
-        }
 
        
 

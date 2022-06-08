@@ -1,11 +1,11 @@
-﻿<Window x:Class="Supermarket_Application.SupermarketListInformation"
+﻿<Window x:Class="Supermarket_Application.ProductSupermarketInformation"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Supermarket_Application"
         mc:Ignorable="d"
-        Title="SupermarketListInformation" Height="421" Width="441">
+        Title="ProductSupermarketInformation" Height="421" Width="441">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="440*"/>
@@ -14,9 +14,9 @@
         <Label x:Name="Product_Name___1" Content="Product Name:" HorizontalAlignment="Center" Margin="0,27,0,0" VerticalAlignment="Top"/>
         <Label x:Name="Product_Name____Copy2" Content="Amount" HorizontalAlignment="Left" Margin="192,124,0,0" VerticalAlignment="Top"/>
         <Label x:Name="Product_Name____Copy3" Content="Total Price" HorizontalAlignment="Center" Margin="0,229,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Center" Margin="0,75,0,0" TextWrapping="Wrap" Text="{Binding Path=productName,Mode=TwoWay}"  TextAlignment="Center" VerticalAlignment="Top" Height="21" Width="193" />
-        <TextBox HorizontalAlignment="Center" Margin="0,182,0,0" TextWrapping="Wrap" Text="{Binding Path=amountProduct,Mode=TwoWay}" TextAlignment="Center" VerticalAlignment="Top" Height="21" Width="193"/>
-        <TextBox HorizontalAlignment="Center" Margin="0,277,0,0" TextWrapping="Wrap" Text="{Binding Path=totalPrice,Mode=TwoWay}"  TextAlignment="Center" VerticalAlignment="Top" Height="21" Width="193"/>
+        <TextBox HorizontalAlignment="Center" Margin="0,75,0,0" TextWrapping="Wrap" Text="{Binding Path=ProductName,Mode=TwoWay}"  TextAlignment="Center" VerticalAlignment="Top" Height="21" Width="193" />
+        <TextBox HorizontalAlignment="Center" Margin="0,182,0,0" TextWrapping="Wrap" Text="{Binding Path=AmountProduct,Mode=TwoWay}" TextAlignment="Center" VerticalAlignment="Top" Height="21" Width="193"/>
+        <TextBox HorizontalAlignment="Center" Margin="0,277,0,0" TextWrapping="Wrap" Text="{Binding Path=TotalPrice,Mode=TwoWay}"  TextAlignment="Center" VerticalAlignment="Top" Height="21" Width="193"/>
         <Button Content="Save" HorizontalAlignment="Left" Margin="176,340,0,0" VerticalAlignment="Top" Height="25" Width="92" Click="AddNewProduct"/>
 
     </Grid>

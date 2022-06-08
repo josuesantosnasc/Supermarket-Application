@@ -1,25 +1,26 @@
-﻿<Window x:Class="Supermarket_Application.MainWindow"
+﻿<Window x:Class="Supermarket_Application.SupermarketApp"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Supermarket_Application"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        
+        Title="SupermarketApp" Height="450" Width="800">
     <Grid>
         <Button Content="Add New Product" Command="{Binding Add}" HorizontalAlignment="Left" Height="36" Margin="39,73,0,0" VerticalAlignment="Top" Width="101"/>
         <Button Content="Edit" Command="{Binding Edit}" HorizontalAlignment="Left" Height="36" Margin="39,161,0,0" VerticalAlignment="Top" Width="101"/>
         <Button Content="Remove" Command="{Binding Remove}" HorizontalAlignment="Left" Height="36" Margin="39,245,0,0" VerticalAlignment="Top" Width="101"/>
-        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="204,73,39,108"  ItemsSource="{Binding  UserSupermarketList}" SelectedItem="{Binding SelectedProduct}" SelectedIndex="{Binding indexSelectedProduct}"  SelectionChanged="ListView_SelectionChanged">
+        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="204,73,39,108"  ItemsSource="{Binding  userProductSupermarket}" SelectedItem="{Binding selectedProduct}"  SelectionChanged="ListView_SelectionChanged">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Product Name" DisplayMemberBinding="{Binding productName}"/>
-                    <GridViewColumn Header=" Amount" DisplayMemberBinding="{Binding amountProduct}"/>
-                    <GridViewColumn Header="Total Price" DisplayMemberBinding="{Binding totalPrice}"/>
+                    <GridViewColumn Header="Product Name" DisplayMemberBinding="{Binding ProductName}"/>
+                    <GridViewColumn Header=" Amount" DisplayMemberBinding="{Binding AmountProduct}"/>
+                    <GridViewColumn Header="Total Price" DisplayMemberBinding="{Binding TotalPrice}"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <TextBox TextWrapping="Wrap" Text="{Binding TotalSupermarketPurchase}" Margin="444,336,217,42" TextAlignment="Center"/>
+        <TextBox TextWrapping="Wrap" Text="{Binding totalSupermarketPurchase}" Margin="444,336,217,42" TextAlignment="Center"/>
         <TextBlock HorizontalAlignment="Left" Height="40" Margin="162,28,0,0" TextWrapping="Wrap" Text="Welcome to Supermarket List" TextAlignment="Center" FontSize="20px" VerticalAlignment="Top" Width="565"/>
         <TextBlock HorizontalAlignment="Left" Height="27" Margin="204,343,0,0" TextWrapping="Wrap" Text="Total Supermarket Purchase"  VerticalAlignment="Top" Width="216" FontSize="15px"/>
 

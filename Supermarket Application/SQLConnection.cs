@@ -12,10 +12,10 @@ namespace Supermarket_Application
     public class SQLConnection
 
     {
-        public ObservableCollection<SupermarketList> UserSupermarketList;
+        private ObservableCollection<ProductSupermarket> userProductSupermarket;
        public SQLConnection()
         {
-            this.UserSupermarketList = new ObservableCollection<SupermarketList>();
+            this.userProductSupermarket = new ObservableCollection<ProductSupermarket>();
         }
 
 
@@ -41,13 +41,18 @@ namespace Supermarket_Application
                     else
                     {
                         MessageBox.Show("Error in inserting data into database");
+                        throw new InvalidOperationException("Error in deleting the data");
                     }
-                    cmd.Dispose();
-                    con.Close();
+                    
                 }
                 catch(Exception ex)
                 {
                     MessageBox.Show(ex.Message);
+                    throw ex;
+                }
+                finally{
+                    cmd.Dispose();
+                    con.Close();
                 }
                
 
@@ -76,13 +81,19 @@ namespace Supermarket_Application
                     else
                     {
                         MessageBox.Show("Error in updating the database");
+                        throw new InvalidOperationException("Error in deleting the data");
                     }
-                    cmd.Dispose();
-                    con.Close();
+                   
                 }
                 catch(Exception ex)
                 {
                     MessageBox.Show(ex.Message);
+                    throw ex;
+                }
+                finally
+                {
+                    cmd.Dispose();
+                    con.Close();
                 }
                
 
@@ -111,19 +122,26 @@ namespace Supermarket_Application
                     else
                     {
                         MessageBox.Show("Error in deleting the data");
+                        throw new InvalidOperationException("Error in deleting the data");
                     }
-                    cmd.Dispose();
+                    
                 }
                 catch(Exception ex)
                 {
                     MessageBox.Show(ex.Message);
+                    throw ex;
+                }
+                finally
+                {
+                    cmd.Dispose();
+                    con.Close();
                 }
                
             }
         }
 
 
-        public ObservableCollection<SupermarketList> GetAllRecords()
+        public ObservableCollection<ProductSupermarket> GetAllRecords()
 
         {
 
@@ -141,16 +159,15 @@ namespace Supermarket_Application
                     {
                         while (reader.Read())
                         {
-                            SupermarketList UserSupermarketListFromDataBase = new SupermarketList(Convert.ToString(reader[1]), Convert.ToInt32(reader[2]), Convert.ToInt32(reader[3]));
-                            this.UserSupermarketList.Add(UserSupermarketListFromDataBase);
+                            ProductSupermarket userProductSupermarketFromDataBase = new ProductSupermarket(Convert.ToString(reader[1]), Convert.ToInt32(reader[2]), Convert.ToInt32(reader[3]));
+                            this.userProductSupermarket.Add(userProductSupermarketFromDataBase);
 
                         }
                     }
 
-                    return this.UserSupermarketList;
+                    return this.userProductSupermarket;
 
-                    cmd.Dispose();
-                    con.Close();
+                   
 
                     
                 }
@@ -158,8 +175,15 @@ namespace Supermarket_Application
                 {
                     MessageBox.Show(ex.Message);
 
-                    return this.UserSupermarketList;
+                    throw ex;
 
+                    return this.userProductSupermarket;
+
+                }
+                finally
+                {
+                    cmd.Dispose();
+                    con.Close();
                 }
 
             }

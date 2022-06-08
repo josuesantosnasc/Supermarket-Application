@@ -15,9 +15,9 @@ using System.Windows.Shapes;
 namespace Supermarket_Application
 {
     
-    public partial class SupermarketListInformation : Window
+    public partial class ProductSupermarketInformation : Window
     {
-        public SupermarketListInformation()
+        public ProductSupermarketInformation()
         {
             InitializeComponent();
         }
