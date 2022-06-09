@@ -15,7 +15,7 @@ namespace Supermarket_Application
         
        
 
-        private SQLConnection sqlDataBase;
+        private SQLConnectionsAndMethodsModel sqlDataBase;
 
         private int totalSupermarketPurchase;
 
@@ -35,7 +35,7 @@ namespace Supermarket_Application
         {
             this.userProductSupermarket = new ObservableCollection<ProductSupermarket>();
              
-            sqlDataBase = new SQLConnection();
+            sqlDataBase = new MySQLConnection();
 
             this.userProductSupermarket = sqlDataBase.GetAllRecords();
 

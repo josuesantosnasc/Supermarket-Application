@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using MySql.Data.MySqlClient;
 using Npgsql;
 
 namespace Supermarket_Application
 {
-    public class SQLConnection
+    public class PostGreConnection:SQLConnectionsAndMethodsModel
 
     {
-        private ObservableCollection<ProductSupermarket> userProductSupermarket;
-       public SQLConnection()
+        public ObservableCollection<ProductSupermarket> userProductSupermarket { get; set; }    
+       public PostGreConnection()
         {
             this.userProductSupermarket = new ObservableCollection<ProductSupermarket>();
         }
@@ -23,7 +25,7 @@ namespace Supermarket_Application
 
         public void InsertRecord(string ProductName, int AmountProduct, int TotalPrice)
         {
-            using (NpgsqlConnection con = GetConnection())
+            using (NpgsqlConnection con = (NpgsqlConnection)GetConnection())
             {
                 string query = $@"insert into public.usersupermarketlist(productname,amountproduct,totalprice) values('{ProductName}',{AmountProduct},{TotalPrice})";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, con);
@@ -63,7 +65,7 @@ namespace Supermarket_Application
 
         {
 
-            using (NpgsqlConnection con = GetConnection())
+            using (NpgsqlConnection con = (NpgsqlConnection)GetConnection())
             {
                 string query = $@"update public.usersupermarketlist set productName='{ProductName}', amountproduct={AmountProduct}, totalprice={TotalPrice} where productname='{OldProductName}'";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, con);
@@ -104,7 +106,7 @@ namespace Supermarket_Application
 
         {
 
-            using (NpgsqlConnection con = GetConnection())
+            using (NpgsqlConnection con = (NpgsqlConnection)GetConnection())
             {
                 string query = $@"delete from public.usersupermarketlist  where productname='{OldProductName}'";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, con);
@@ -145,7 +147,7 @@ namespace Supermarket_Application
 
         {
 
-            using (NpgsqlConnection con = GetConnection())
+            using (NpgsqlConnection con = (NpgsqlConnection)GetConnection())
             {
                 string query = @"select * from public.usersupermarketlist";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, con);
@@ -190,8 +192,10 @@ namespace Supermarket_Application
         }
 
 
-        private static NpgsqlConnection GetConnection()
+        public DbConnection GetConnection()
         {
+
+            
             return new NpgsqlConnection(@"Server=localhost;Port=5430;User Id=root;Password=root;Database=test_db");
 
         }
